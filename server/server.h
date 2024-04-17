@@ -11,7 +11,7 @@ public:
     explicit Server(QObject *parent = nullptr);
 
 private slots:
-    //void newClientArrived(QByteArray id);
+    void newClientArrived(QByteArray id);
 
 private:
     Network *m_network;
