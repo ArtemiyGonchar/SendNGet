@@ -2,6 +2,7 @@
 #define CLIENT_H
 
 #include <QMainWindow>
+#include "network.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -19,9 +20,11 @@ public:
 
 private slots:
     void connectButtonClicked();
-    void connected();
+    void connectedToHost();
 
 private:
     Ui::Client *ui;
+    Network *m_network;
+
 };
 #endif // CLIENT_H

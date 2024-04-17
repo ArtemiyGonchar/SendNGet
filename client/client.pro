@@ -10,10 +10,12 @@ CONFIG += c++17
 
 SOURCES += \
     main.cpp \
-    client.cpp
+    client.cpp \
+    network.cpp
 
 HEADERS += \
-    client.h
+    client.h \
+    network.h
 
 FORMS += \
     client.ui
