@@ -23,6 +23,14 @@ bool Network::portStart(int port)
     return started;
 }
 
+void Network::sentToClient(QByteArray id)
+{
+    QJsonObject json;
+    json["id"] = QString(id);
+    QJsonDocument jDoc { json };
+    m_clients[id]->write(jDoc.toJson());
+}
+
 void Network::clientConnected()
 {
     QTcpSocket *client = m_server->nextPendingConnection();

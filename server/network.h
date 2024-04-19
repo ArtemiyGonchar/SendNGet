@@ -7,6 +7,9 @@
 #include <QDebug>
 #include <QUuid>
 
+#include <QJsonDocument>
+#include <QJsonObject>
+
 class Network : public QObject
 {
     Q_OBJECT
@@ -14,6 +17,12 @@ public:
     explicit Network(QObject *parent = nullptr);
 
     bool portStart(int port);
+
+    struct Request {
+        QByteArray uuid;
+        QString additionalInfo;
+    };
+
 private:
     QTcpServer *m_server;
     QMap<QByteArray, QTcpSocket*> m_clients;
@@ -21,6 +30,9 @@ private:
 signals:
     void onClientArrived(QByteArray id);
     void onClientDisconnected(QByteArray id);
+
+public slots:
+    void sentToClient(QByteArray id);
 
 private slots:
     void clientConnected();

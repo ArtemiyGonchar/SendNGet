@@ -12,4 +12,5 @@ Server::Server(QObject *parent)
 void Server::newClientArrived(QByteArray id)
 {
     qDebug()<<id;
+    m_network->sentToClient(id);
 }
