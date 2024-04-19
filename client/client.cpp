@@ -16,7 +16,6 @@ Client::Client(QWidget *parent)
 
 
     connect(m_network, &Network::connected, this, &Client::connectedToHost);
-
     connect(ui->b_connect, &QPushButton::clicked, this, &Client::connectButtonClicked);
 }
 
