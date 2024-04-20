@@ -25,8 +25,19 @@ bool Network::portStart(int port)
 
 void Network::sentToClient(QByteArray id)
 {
-    QJsonObject json;
-    json["id"] = QString(id);
+    //QJsonObject json;
+    //json["userId"] = QString(id);
+    //json["clientsId"] = "client`s id";
+
+    QJsonObject innerJson{
+                          {"userId", QString(id)},
+        {"clientsId", "clientiki i ID"}
+    };
+
+    QJsonObject json{
+        {"ID", innerJson}
+    };
+
     QJsonDocument jDoc { json };
     m_clients[id]->write(jDoc.toJson());
 }
