@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QTcpSocket>
-
+#include "networkparser.h"
 
 
 class Network : public QObject
@@ -12,11 +12,6 @@ class Network : public QObject
 public:
     explicit Network(QObject *parent = nullptr);
     void connectToHost(QString ip, int port);
-
-    struct Request {
-        QByteArray uuid;
-        QString additionalInfo;
-    };
 
 private slots:
     void connectedToHost();

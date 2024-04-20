@@ -11,11 +11,13 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     client.cpp \
-    network.cpp
+    network.cpp \
+    networkparser.cpp
 
 HEADERS += \
     client.h \
-    network.h
+    network.h \
+    networkparser.h
 
 FORMS += \
     client.ui

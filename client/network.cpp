@@ -19,15 +19,23 @@ void Network::connectedToHost()
     emit connected();
 }
 
+//reading data from socket
 void Network::readyRead()
 {
     QByteArray data = m_socket->readAll();
 
     qDebug()<<data;
+
+    //processRawRequest(data);
 }
 
+//data analyze
 void Network::processRawRequest(QByteArray rawRequest)
 {
     qDebug()<<"rawreq";
+
+    NetworkParser::Request request = NetworkParser::parseRequest(rawRequest);
+    qDebug() << "=========";
+    qDebug() << request.action;
 }
 
