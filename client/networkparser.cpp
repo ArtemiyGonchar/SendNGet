@@ -8,10 +8,23 @@ NetworkParser::Request NetworkParser::parseRequest(QByteArray data)
 {
     NetworkParser::Request request;
 
-    QJsonObject json = QJsonDocument::fromJson(data).object();
-    qDebug()<<json;
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
+    QJsonObject jsonObj = jsonDoc.object();
+
+
+    if (jsonObj.contains("ID")){
+        QJsonObject idObj = jsonObj["ID"].toObject();
+        qDebug()<<idObj;
+        qDebug()<<"===";
+        qDebug()<<idObj["userId"].toString();
+        request.uuid = idObj["userId"].toString().toUtf8(); //test toUtf8
+    }
+    //QJsonObject json = QJsonDocument::fromJson(data).object();
+    //qDebug()<<json;
     qDebug()<<"=====";
-    request.action = parseAction(json.value("action").toString());
+    //request.action = parseAction(json.value("action").toString());
+
+    return request;
 }
 
 NetworkParser::Action NetworkParser::parseAction(QString data){

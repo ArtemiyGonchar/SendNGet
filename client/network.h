@@ -16,7 +16,7 @@ public:
 private slots:
     void connectedToHost();
     void readyRead();
-    void processRawRequest(QByteArray rawRequest);
+    //void processRawRequest(QByteArray rawRequest);
 
 private:
     QTcpSocket *m_socket;

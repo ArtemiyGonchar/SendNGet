@@ -34,4 +34,6 @@ void Client::connectButtonClicked()
 void Client::connectedToHost()
 {
     ui->stackedWidget->setCurrentIndex(1);
+    ui->l_id->setText("id");
+
 }

@@ -24,18 +24,32 @@ void Network::readyRead()
 {
     QByteArray data = m_socket->readAll();
 
-    qDebug()<<data;
+    //QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
 
+    //QJsonObject jsonObj = jsonDoc.object();
+    //qDebug()<< jsonObj;
+
+    /*if (jsonObj.contains("ID")){
+        QJsonObject idObj = jsonObj["ID"].toObject();
+        qDebug()<<idObj;
+    }*/
+
+    qDebug()<<"-----";
+    qDebug()<<data;
+    qDebug()<<"-----";
+    //qDebug()<<jsonDoc;
     //processRawRequest(data);
+    NetworkParser::Request request = NetworkParser::parseRequest(data);
+    qDebug()<<request.uuid;
 }
 
 //data analyze
-void Network::processRawRequest(QByteArray rawRequest)
+/*void Network::processRawRequest(QByteArray rawRequest)
 {
     qDebug()<<"rawreq";
 
     NetworkParser::Request request = NetworkParser::parseRequest(rawRequest);
     qDebug() << "=========";
-    qDebug() << request.action;
-}
+    //qDebug() << request.action;
+}*/
 
