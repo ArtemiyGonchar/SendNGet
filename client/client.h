@@ -21,10 +21,11 @@ public:
 private slots:
     void connectButtonClicked();
     void connectedToHost();
-
+    void assignId(QString id);
 private:
     Ui::Client *ui;
-    Network *m_network;
 
+    Network *m_network;
+    QString m_id;
 };
 #endif // CLIENT_H

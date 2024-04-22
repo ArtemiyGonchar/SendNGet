@@ -5,8 +5,10 @@ Network::Network(QObject *parent)
 {
     m_socket = new QTcpSocket();
 
+
     connect(m_socket, &QTcpSocket::connected,this, &Network::connectedToHost);
     connect(m_socket, &QTcpSocket::readyRead,this , &Network::readyRead);
+
 }
 
 void Network::connectToHost(QString ip, int port)
@@ -24,32 +26,17 @@ void Network::readyRead()
 {
     QByteArray data = m_socket->readAll();
 
-    //QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
-
-    //QJsonObject jsonObj = jsonDoc.object();
-    //qDebug()<< jsonObj;
-
-    /*if (jsonObj.contains("ID")){
-        QJsonObject idObj = jsonObj["ID"].toObject();
-        qDebug()<<idObj;
-    }*/
-
-    qDebug()<<"-----";
-    qDebug()<<data;
-    qDebug()<<"-----";
-    //qDebug()<<jsonDoc;
-    //processRawRequest(data);
     NetworkParser::Request request = NetworkParser::parseRequest(data);
-    qDebug()<<request.uuid;
+    emitAction(request);
 }
 
-//data analyze
-/*void Network::processRawRequest(QByteArray rawRequest)
+void Network::emitAction(NetworkParser::Request request)
 {
-    qDebug()<<"rawreq";
+    qDebug()<<"Emit action";
 
-    NetworkParser::Request request = NetworkParser::parseRequest(rawRequest);
-    qDebug() << "=========";
-    //qDebug() << request.action;
-}*/
+    switch(request.action){
+    case NetworkParser::Action::assignId: emit idAvailable(request.uuid); break;
+    }
+}
+
 

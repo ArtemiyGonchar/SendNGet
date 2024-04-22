@@ -22,9 +22,8 @@ public:
         Action action;
     };
 
-    static Request parseRequest(QByteArray data);
 
-    static Action parseAction(QString data);
+    static Request parseRequest(QByteArray data);
 
 };
 

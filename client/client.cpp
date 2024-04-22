@@ -7,7 +7,7 @@ Client::Client(QWidget *parent)
 {
     ui->setupUi(this);
 
-
+    //request = new NetworkParser(this); //?
     m_network = new Network(this);
 
     ui->sb_port->setMaximum(16000);  //max port
@@ -16,7 +16,11 @@ Client::Client(QWidget *parent)
 
 
     connect(m_network, &Network::connected, this, &Client::connectedToHost);
+    connect(m_network, &Network::idAvailable, this, &Client::assignId);
+
     connect(ui->b_connect, &QPushButton::clicked, this, &Client::connectButtonClicked);
+
+
 }
 
 Client::~Client()
@@ -34,6 +38,15 @@ void Client::connectButtonClicked()
 void Client::connectedToHost()
 {
     ui->stackedWidget->setCurrentIndex(1);
-    ui->l_id->setText("id");
+    qDebug()<<"Connected to host";
 
+}
+
+//when we recevie id this func start
+void Client::assignId(QString id)
+{
+    qDebug() << "ID Assigned: " << id;
+    m_id = id;
+
+    ui->l_id->setText(id);
 }

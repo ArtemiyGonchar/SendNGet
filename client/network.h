@@ -14,12 +14,15 @@ public:
     void connectToHost(QString ip, int port);
 
 private slots:
+
     void connectedToHost();
     void readyRead();
-    //void processRawRequest(QByteArray rawRequest);
+
+    void emitAction(NetworkParser::Request request);
 
 private:
     QTcpSocket *m_socket;
+
 
 signals:
     void connected();
