@@ -24,10 +24,21 @@ NetworkParser::Request NetworkParser::parseRequest(QByteArray data)
 
     if(jsonObj.contains("CLIENTSID")){
         QJsonObject idObj = jsonObj["CLIENTSID"].toObject();
-        qDebug()<<idObj;
-        QJsonValue clientsId = idObj.value("clientsId");
-        qDebug()<<clientsId;
+        QJsonValue clientsIdValue = idObj.value("clientsId");
 
+        if (clientsIdValue.isArray()) {
+            QJsonArray clientsArray = clientsIdValue.toArray();
+            for (const QJsonValue& clientIdValue : clientsArray) {
+                if (clientIdValue.isString()) {
+                    QString clientId = clientIdValue.toString();
+                    qDebug() << "Client ID:" << clientId;
+                    request.clientsId<<clientId;
+                }
+            }
+        }
+        request.action = NetworkParser::newClient;
+        request.addition = "CLIENTSLIST";
+        qDebug()<<request.clientsId;
     }
     //QJsonObject json = QJsonDocument::fromJson(data).object();
     //qDebug()<<json;

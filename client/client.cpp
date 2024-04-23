@@ -17,6 +17,7 @@ Client::Client(QWidget *parent)
 
     connect(m_network, &Network::connected, this, &Client::connectedToHost);
     connect(m_network, &Network::idAvailable, this, &Client::assignId);
+    connect(m_network, &Network::clientsIdAvailable, this, &Client::addClientsToUi);
 
     connect(ui->b_connect, &QPushButton::clicked, this, &Client::connectButtonClicked);
 
@@ -49,4 +50,20 @@ void Client::assignId(QString id)
     m_id = id;
 
     ui->l_id->setText(id);
+}
+
+void Client::addClientsToUi(QStringList clients, QString info)
+{
+    qDebug()<<clients;
+    if(info == "CLIENTSLIST"){
+        qDebug()<<"clientiiikii";
+        for(QString id : clients){
+            qDebug()<<id;
+
+            if (m_id == id){
+                continue;
+            }
+            ui->listWidget->addItem(id);
+        }
+    }
 }

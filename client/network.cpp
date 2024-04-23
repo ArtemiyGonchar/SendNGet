@@ -38,7 +38,7 @@ void Network::emitAction(NetworkParser::Request request)
 
     switch(request.action){
     case NetworkParser::Action::assignId: emit idAvailable(request.uuid); break;
-    case NetworkParser::Action::newClient: qDebug()<<"request.clientsId;"; break;
+    case NetworkParser::Action::newClient: emit clientsIdAvailable(request.clientsId, request.addition); break;
     }
 }
 

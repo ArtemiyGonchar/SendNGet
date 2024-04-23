@@ -22,6 +22,7 @@ private slots:
     void connectButtonClicked();
     void connectedToHost();
     void assignId(QString id);
+    void addClientsToUi(QStringList clients, QString info);
 private:
     Ui::Client *ui;
 
