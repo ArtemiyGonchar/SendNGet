@@ -40,6 +40,13 @@ NetworkParser::Request NetworkParser::parseRequest(QByteArray data)
         request.addition = "CLIENTSLIST";
         qDebug()<<request.clientsId;
     }
+
+    if(jsonObj.contains("DISCONNECTED")){
+        QJsonObject idObj = jsonObj["DISCONNECTED"].toObject();
+        request.disconnectedId = idObj["Id"].toString();
+        qDebug()<<"disconnected: "<<request.disconnectedId;
+        request.action = NetworkParser::disconnected;
+    }
     //QJsonObject json = QJsonDocument::fromJson(data).object();
     //qDebug()<<json;
     //qDebug()<<"=====";

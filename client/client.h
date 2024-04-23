@@ -23,6 +23,7 @@ private slots:
     void connectedToHost();
     void assignId(QString id);
     void addClientsToUi(QStringList clients, QString info);
+    void removeClientFromUi(QString id);
 private:
     Ui::Client *ui;
 

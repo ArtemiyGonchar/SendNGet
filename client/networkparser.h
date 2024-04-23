@@ -17,7 +17,8 @@ public:
         assignId,
         connectToClient,
         newClient,
-        noaction
+        noaction,
+        disconnected
     };
 
     struct Request {
@@ -25,6 +26,7 @@ public:
         Action action;
         QStringList clientsId;
         QString addition;
+        QString disconnectedId;
     };
 
 

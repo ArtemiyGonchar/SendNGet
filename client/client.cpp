@@ -18,6 +18,8 @@ Client::Client(QWidget *parent)
     connect(m_network, &Network::connected, this, &Client::connectedToHost);
     connect(m_network, &Network::idAvailable, this, &Client::assignId);
     connect(m_network, &Network::clientsIdAvailable, this, &Client::addClientsToUi);
+    connect(m_network, &Network::clientDisconnected, this, &Client::removeClientFromUi);
+
 
     connect(ui->b_connect, &QPushButton::clicked, this, &Client::connectButtonClicked);
 
@@ -54,16 +56,24 @@ void Client::assignId(QString id)
 
 void Client::addClientsToUi(QStringList clients, QString info)
 {
+
     qDebug()<<clients;
     if(info == "CLIENTSLIST"){
         qDebug()<<"clientiiikii";
         for(QString id : clients){
             qDebug()<<id;
-
-            if (m_id == id){
-                continue;
+            QList<QListWidgetItem*> foundItems = ui->listWidget->findItems(id, Qt::MatchExactly);
+            if (foundItems.isEmpty() && m_id != id){
+                ui->listWidget->addItem(id);
             }
-            ui->listWidget->addItem(id);
         }
     }
+}
+
+void Client::removeClientFromUi(QString id)
+{
+    qDebug()<<"^-^ removed"<<id;
+    QListWidgetItem *item = ui->listWidget->findItems(id, Qt::MatchExactly).first();
+    ui->listWidget->takeItem(ui->listWidget->row(item));
+    clients_id.removeOne(id);
 }
