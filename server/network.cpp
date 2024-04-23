@@ -23,15 +23,19 @@ bool Network::portStart(int port)
     return started;
 }
 
-void Network::sentToClient(QByteArray id)
+void Network::sentToClientId(QByteArray id)
 {
     //QJsonObject json;
     //json["userId"] = QString(id);
     //json["clientsId"] = "client`s id";
 
-    QJsonObject innerJson{
+    /*QJsonObject innerJson{
                           {"userId", QString(id)},
         {"clientsId", "clientiki i ID"}
+    };*/
+
+    QJsonObject innerJson{
+        {"userId", QString(id)}
     };
 
     QJsonObject json{
@@ -40,6 +44,34 @@ void Network::sentToClient(QByteArray id)
 
     QJsonDocument jDoc { json };
     m_clients[id]->write(jDoc.toJson());
+    m_clients[id]->flush();
+}
+
+void Network::sendToAllClientsId()
+{
+
+    QJsonArray clientsArray;
+
+    for (QByteArray id : m_clients.keys()){
+        clientsArray.append(QString(id));
+    }
+
+    QJsonObject innerJson{
+        {"clientsId", clientsArray}
+    };
+    QJsonObject json{
+        {"CLIENTSID", innerJson}
+    };
+
+    QJsonDocument jDoc { json };
+
+
+    for (QByteArray id : m_clients.keys()){
+        QByteArray data = jDoc.toJson();
+        m_clients[id]->write(data);
+        m_clients[id]->flush();
+    }
+
 }
 
 void Network::clientConnected()
@@ -49,6 +81,13 @@ void Network::clientConnected()
     m_clients[id] = client;
 
     qDebug()<<("New client connected");
+    qDebug()<<m_clients;
+
+    for (QByteArray id : m_clients.keys()){
+        qDebug()<<(QString("Client: %1").arg(id));
+    }
+
+    //qDebug()<<m_clients.keys();
 
     //connect(client, &QTcpSocket::readyRead, this, &Network::?);
     connect(client, &QTcpSocket::disconnected, this, &Network::clientDisconnected);

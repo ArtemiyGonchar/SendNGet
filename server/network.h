@@ -9,6 +9,7 @@
 
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 
 class Network : public QObject
 {
@@ -32,7 +33,8 @@ signals:
     void onClientDisconnected(QByteArray id);
 
 public slots:
-    void sentToClient(QByteArray id);
+    void sentToClientId(QByteArray id);
+    void sendToAllClientsId();
 
 private slots:
     void clientConnected();

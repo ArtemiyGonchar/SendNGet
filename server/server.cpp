@@ -12,5 +12,7 @@ Server::Server(QObject *parent)
 void Server::newClientArrived(QByteArray id)
 {
     qDebug()<<id;
-    m_network->sentToClient(id);
+    m_network->sentToClientId(id);
+    QThread::msleep(100);
+    m_network->sendToAllClientsId();
 }

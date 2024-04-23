@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "network.h"
+#include <QThread>
 
 class Server : public QObject
 {
