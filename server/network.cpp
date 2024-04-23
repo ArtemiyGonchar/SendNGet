@@ -25,14 +25,6 @@ bool Network::portStart(int port)
 
 void Network::sentToClientId(QByteArray id)
 {
-    //QJsonObject json;
-    //json["userId"] = QString(id);
-    //json["clientsId"] = "client`s id";
-
-    /*QJsonObject innerJson{
-                          {"userId", QString(id)},
-        {"clientsId", "clientiki i ID"}
-    };*/
 
     QJsonObject innerJson{
         {"userId", QString(id)}
@@ -100,6 +92,22 @@ void Network::clientDisconnected()
     for(QByteArray id : m_clients.keys()){
         if (m_clients[id] == client){
             qDebug()<<"Client disconnected";
+
+            QJsonObject innerJson{
+                {"Id", QString(id)}
+            };
+
+            QJsonObject json{
+                {"DISCONNECTED", innerJson}
+            };
+
+            QJsonDocument jDoc { json };
+
+            for (QByteArray anotherId : m_clients.keys()){
+                QByteArray data = jDoc.toJson();
+                m_clients[anotherId]->write(data);
+                m_clients[anotherId]->flush();
+            }
             emit onClientDisconnected(id);
             m_clients.remove(id);
         }

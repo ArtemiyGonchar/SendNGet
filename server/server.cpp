@@ -15,4 +15,5 @@ void Server::newClientArrived(QByteArray id)
     m_network->sentToClientId(id);
     QThread::msleep(100);
     m_network->sendToAllClientsId();
+
 }
