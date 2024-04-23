@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QJsonObject>
 #include <QJsonDocument>
+#include <QStringList>
+
 class NetworkParser : public QObject
 {
     Q_OBJECT
@@ -20,6 +22,7 @@ public:
     struct Request {
         QByteArray uuid;
         Action action;
+        QStringList clientsId;
     };
 
 

@@ -27,5 +27,6 @@ private:
 
     Network *m_network;
     QString m_id;
+    QStringList clients_id;
 };
 #endif // CLIENT_H

@@ -27,6 +27,7 @@ private:
 signals:
     void connected();
     void idAvailable(QString id);
+    void clientsIdAvailable(QStringList id);
 };
 
 #endif // NETWORK_H

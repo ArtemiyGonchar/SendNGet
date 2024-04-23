@@ -26,6 +26,8 @@ void Network::readyRead()
 {
     QByteArray data = m_socket->readAll();
 
+    qDebug()<<data;
+
     NetworkParser::Request request = NetworkParser::parseRequest(data);
     emitAction(request);
 }
@@ -36,6 +38,7 @@ void Network::emitAction(NetworkParser::Request request)
 
     switch(request.action){
     case NetworkParser::Action::assignId: emit idAvailable(request.uuid); break;
+    case NetworkParser::Action::newClient: qDebug()<<"request.clientsId;"; break;
     }
 }
 

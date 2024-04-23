@@ -21,6 +21,14 @@ NetworkParser::Request NetworkParser::parseRequest(QByteArray data)
         request.uuid = idObj["userId"].toString().toUtf8(); //test toUtf8
         request.action = Action::assignId;
     }
+
+    if(jsonObj.contains("CLIENTSID")){
+        QJsonObject idObj = jsonObj["CLIENTSID"].toObject();
+        qDebug()<<idObj;
+        QJsonValue clientsId = idObj.value("clientsId");
+        qDebug()<<clientsId;
+
+    }
     //QJsonObject json = QJsonDocument::fromJson(data).object();
     //qDebug()<<json;
     //qDebug()<<"=====";
