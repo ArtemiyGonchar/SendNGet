@@ -39,6 +39,7 @@ public slots:
 private slots:
     void clientConnected();
     void clientDisconnected();
+    void readFromClient();
 };
 
 #endif // NETWORK_H

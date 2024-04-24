@@ -6,6 +6,7 @@ Network::Network(QObject *parent)
     m_server = new QTcpServer(this);
 
     connect(m_server, &QTcpServer::newConnection, this, &Network::clientConnected);
+
 }
 
 bool Network::portStart(int port)
@@ -81,7 +82,7 @@ void Network::clientConnected()
 
     //qDebug()<<m_clients.keys();
 
-    //connect(client, &QTcpSocket::readyRead, this, &Network::?);
+    connect(client, &QTcpSocket::readyRead, this, &Network::readFromClient);
     connect(client, &QTcpSocket::disconnected, this, &Network::clientDisconnected);
     emit onClientArrived(id);
 }
@@ -113,4 +114,12 @@ void Network::clientDisconnected()
         }
     }
 
+}
+
+void Network::readFromClient()
+{
+    QTcpSocket *client = (QTcpSocket*)sender();
+    QByteArray data = client->readLine();
+    qDebug()<<"readfromClient";
+    qDebug()<<data;
 }
