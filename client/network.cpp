@@ -32,6 +32,20 @@ void Network::readyRead()
     emitAction(request);
 }
 
+void Network::sendFile(QString path, QByteArray id, QString clientsId)
+{
+    QFile file(path);
+
+    if(!file.open(QIODevice::ReadOnly)){
+        qDebug("Fail :D");
+    }
+
+    QString fileName = QFileInfo(file).fileName();
+    m_socket->write(fileName.toUtf8());
+    m_socket->write("\n");
+    m_socket->write(id);
+}
+
 void Network::emitAction(NetworkParser::Request request)
 {
     qDebug()<<"Emit action";

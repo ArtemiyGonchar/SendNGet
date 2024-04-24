@@ -22,7 +22,10 @@ Client::Client(QWidget *parent)
 
 
     connect(ui->b_connect, &QPushButton::clicked, this, &Client::connectButtonClicked);
+    connect(ui->b_fileSelect, &QPushButton::clicked, this, &Client::setFile);
+    connect(ui->b_sendfile, &QPushButton::clicked, this, &Client::sendFile);
 
+    connect(ui->listWidget, &QListWidget::doubleClicked, this, &Client::selectClientAndSend);
 
 }
 
@@ -44,6 +47,7 @@ void Client::connectedToHost()
     qDebug()<<"Connected to host";
 
 }
+
 
 //when we recevie id this func start
 void Client::assignId(QString id)
@@ -76,4 +80,47 @@ void Client::removeClientFromUi(QString id)
     QListWidgetItem *item = ui->listWidget->findItems(id, Qt::MatchExactly).first();
     ui->listWidget->takeItem(ui->listWidget->row(item));
     clients_id.removeOne(id);
+}
+
+void Client::selectClientAndSend()
+{
+    if(ui->listWidget->currentItem()){
+        qDebug()<<"SELECTED";
+    }
+}
+
+void Client::sendFile()
+{
+    if (!m_path.isEmpty()){
+        qDebug()<<m_path;
+
+        /*QFile file(m_path);
+
+        if(!file.open(QIODevice::ReadOnly)){
+            qDebug("Fail :D");
+        }
+        */
+
+        m_network->sendFile(m_path, m_id.toUtf8(), "s");
+
+        //QString fileName = QFileInfo(file).fileName();
+
+
+    } else {
+        qDebug()<<"Path is empty!";
+    }
+
+}
+
+void Client::setFile()
+{
+    if(ui->listWidget->currentItem()){
+        m_path = QFileDialog::getOpenFileName(this, "Choose file", QDir::homePath());
+        qDebug()<<m_path;
+
+        QFileInfo fileInfo(m_path);
+        QString fileName = fileInfo.baseName();
+
+        ui->l_filename->setText(fileName);
+    }
 }

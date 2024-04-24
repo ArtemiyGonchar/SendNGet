@@ -3,6 +3,9 @@
 
 #include <QMainWindow>
 #include "network.h"
+//#include <QFileDialog>
+//#include <QFileInfo>
+#include <QString>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -21,12 +24,21 @@ public:
 private slots:
     void connectButtonClicked();
     void connectedToHost();
+
+    //void connectToClient();
+
     void assignId(QString id);
+
     void addClientsToUi(QStringList clients, QString info);
     void removeClientFromUi(QString id);
+    void selectClientAndSend();
+
+    void sendFile();
+    void setFile();
 private:
     Ui::Client *ui;
 
+    QString m_path;
     Network *m_network;
     QString m_id;
     QStringList clients_id;

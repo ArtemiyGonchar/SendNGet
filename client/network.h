@@ -4,7 +4,8 @@
 #include <QObject>
 #include <QTcpSocket>
 #include "networkparser.h"
-
+#include <QFileDialog>
+#include <QFileInfo>
 
 class Network : public QObject
 {
@@ -12,11 +13,14 @@ class Network : public QObject
 public:
     explicit Network(QObject *parent = nullptr);
     void connectToHost(QString ip, int port);
+    void sendFile(QString file, QByteArray id, QString clientsId);
 
 private slots:
 
     void connectedToHost();
     void readyRead();
+
+    //void sendFile(QFile file);
 
     void emitAction(NetworkParser::Request request);
 
