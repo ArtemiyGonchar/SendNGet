@@ -6,6 +6,8 @@
 #include <QTcpSocket>
 #include <QDebug>
 #include <QUuid>
+#include <QString>
+
 
 #include <QJsonDocument>
 #include <QJsonObject>

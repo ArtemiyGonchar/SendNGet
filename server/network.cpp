@@ -122,4 +122,10 @@ void Network::readFromClient()
     QByteArray data = client->readLine();
     qDebug()<<"readfromClient";
     qDebug()<<data;
+    QString id = data;
+    if(id.endsWith("id")){
+        qDebug()<<"ID YEAH---";
+        id = id.split(":::")[0];
+        qDebug()<<"mazafaka: "<<id;
+    }
 }
