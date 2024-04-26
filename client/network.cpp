@@ -41,9 +41,12 @@ void Network::sendFile(QString path, QByteArray id, QString clientsId)
     }
 
     QString fileName = QFileInfo(file).fileName();
+    //m_socket->write(fileName.toUtf8());
+    //m_socket->write("::");
+    //m_socket->flush();
+    m_socket->write(id+":::id");
+    m_socket->flush();
     m_socket->write(fileName.toUtf8());
-    m_socket->write("\n");
-    m_socket->write(id);
 }
 
 void Network::emitAction(NetworkParser::Request request)
