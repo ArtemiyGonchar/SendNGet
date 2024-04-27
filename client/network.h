@@ -6,6 +6,8 @@
 #include "networkparser.h"
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QString>
+#include <QThread>
 
 class Network : public QObject
 {

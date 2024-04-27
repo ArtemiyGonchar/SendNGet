@@ -94,17 +94,10 @@ void Client::sendFile()
     if (!m_path.isEmpty()){
         qDebug()<<m_path;
 
-        /*QFile file(m_path);
+        QListWidgetItem *item = ui->listWidget->currentItem();
+        QString id = item->text();
 
-        if(!file.open(QIODevice::ReadOnly)){
-            qDebug("Fail :D");
-        }
-        */
-
-        m_network->sendFile(m_path, m_id.toUtf8(), "s");
-
-        //QString fileName = QFileInfo(file).fileName();
-
+        m_network->sendFile(m_path, id.toUtf8(), "s");
 
     } else {
         qDebug()<<"Path is empty!";
