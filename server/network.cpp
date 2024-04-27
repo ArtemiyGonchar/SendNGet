@@ -36,7 +36,8 @@ void Network::sentToClientId(QByteArray id)
     };
 
     QJsonDocument jDoc { json };
-    m_clients[id]->write(jDoc.toJson());
+    //m_clients[id]->write(jDoc.toJson());
+    m_clients[id]->write(jDoc.toJson()+":::json");
     m_clients[id]->flush();
 }
 
@@ -61,7 +62,7 @@ void Network::sendToAllClientsId()
 
     for (QByteArray id : m_clients.keys()){
         QByteArray data = jDoc.toJson();
-        m_clients[id]->write(data);
+        m_clients[id]->write(data+":::json");
         m_clients[id]->flush();
     }
 
@@ -106,7 +107,7 @@ void Network::clientDisconnected()
 
             for (QByteArray anotherId : m_clients.keys()){
                 QByteArray data = jDoc.toJson();
-                m_clients[anotherId]->write(data);
+                m_clients[anotherId]->write(data+":::json");
                 m_clients[anotherId]->flush();
             }
             emit onClientDisconnected(id);
@@ -119,6 +120,7 @@ void Network::clientDisconnected()
 void Network::readFromClient()
 {
     QTcpSocket *client = (QTcpSocket*)sender();
+    //QByteArray data = client->readLine();
     QByteArray data = client->readLine();
     qDebug()<<"readfromClient";
     qDebug()<<data;
@@ -127,5 +129,11 @@ void Network::readFromClient()
         qDebug()<<"ID YEAH---";
         id = id.split(":::")[0];
         qDebug()<<"mazafaka: "<<id;
+        m_clientId = id.toUtf8();
+        return;
+    }
+    if(!m_clientId.isEmpty()){
+        qDebug()<<"Not empty";
+        m_clients[m_clientId]->write(data);
     }
 }

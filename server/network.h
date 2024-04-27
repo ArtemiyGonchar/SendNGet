@@ -30,6 +30,8 @@ private:
     QTcpServer *m_server;
     QMap<QByteArray, QTcpSocket*> m_clients;
 
+    QByteArray m_clientId;
+
 signals:
     void onClientArrived(QByteArray id);
     void onClientDisconnected(QByteArray id);
