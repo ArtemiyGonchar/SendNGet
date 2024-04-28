@@ -21,6 +21,7 @@ private slots:
 
     void connectedToHost();
     void readyRead();
+    void sendChunk();
 
     //void sendFile(QFile file);
 

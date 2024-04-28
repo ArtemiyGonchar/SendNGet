@@ -8,6 +8,8 @@ Network::Network(QObject *parent)
 
     connect(m_socket, &QTcpSocket::connected,this, &Network::connectedToHost);
     connect(m_socket, &QTcpSocket::readyRead,this , &Network::readyRead);
+    connect(m_socket, &QTcpSocket::bytesWritten, this, &Network::sendChunk);
+
 
 }
 
@@ -43,6 +45,11 @@ void Network::readyRead()
     //emitAction(request);
 }
 
+void Network::sendChunk()
+{
+    qDebug()<<"CHUNK SENDED YEEEEAH YEAH";
+}
+
 void Network::sendFile(QString path, QByteArray id, QString clientsId)
 {
     QFile file(path);
@@ -65,9 +72,9 @@ void Network::sendFile(QString path, QByteArray id, QString clientsId)
     quint64 size = file.size();
     QString fileSize = QString::number(size);
     //m_socket->write(size);
-    //m_socket->write(reinterpret_cast<const char*>(&size), sizeof(size));
-    //m_socket->waitForReadyRead()
-    m_socket->write(fileSize.toUtf8()+":::size");
+    m_socket->write(reinterpret_cast<const char*>(&size), sizeof(size));
+    m_socket->write(":::size");
+    //m_socket->write(fileSize.toUtf8()+":::size");
     m_socket->flush();
 
 
