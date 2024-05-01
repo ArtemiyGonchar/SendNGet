@@ -121,7 +121,7 @@ void Network::readFromClient()
 {
     QTcpSocket *client = (QTcpSocket*)sender();
     //QByteArray data = client->readLine();
-    QByteArray data = client->readLine();
+    QByteArray data = client->readAll();
     qDebug()<<"readfromClient";
     qDebug()<<data;
     QString id = data;
