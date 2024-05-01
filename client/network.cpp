@@ -27,12 +27,37 @@ void Network::connectedToHost()
 void Network::readyRead()
 {
     QByteArray data = m_socket->readAll();
-
-    qDebug()<<data;
+    QString dataString = data;
+    //qDebug()<<data;
     //QString dataString = data;
 
+
+
+    if (data.endsWith(":::filename")){
+        //QString dataString
+        dataString = dataString.split(":::")[0];
+
+        qDebug()<<dataString<< "NAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAME";
+        m_path = "C:/SendNGet/"+dataString;
+    }
+
+    if (data.endsWith(":::size")){
+        m_size = dataString.split(":::")[0];
+        qDebug()<<m_size<<"SIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIZe";
+    }
+
+    if(data.endsWith("b")){
+        qDebug()<<data<<"NIIIIIIIIIIIIIGAAAAAAAAAA";
+        m_data += dataString.split(":::")[0].toUtf8();
+    }
+
+    if(data.endsWith("END")){
+        saveFile();
+    }
+
+
     if (data.endsWith("json")){
-        QString dataString = data;
+        //QString dataString = data;
         dataString = dataString.split(":::")[0];
 
         qDebug()<<"YEAH JSON++++++";
@@ -48,6 +73,26 @@ void Network::readyRead()
 void Network::sendChunk()
 {
     qDebug()<<"CHUNK SENDED YEEEEAH YEAH";
+}
+
+void Network::saveFile()
+{
+    QByteArray data = QByteArray::fromHex(m_data);
+    QFile file(m_path);
+    if (!file.open(QIODevice::WriteOnly)){
+        qDebug()<<"GIVNO";
+        return;
+    }
+
+    qint64 bytesWritten = file.write(data);
+    if (bytesWritten == -1) {
+        qDebug() << "Failed to write file data";
+    } else {
+        qDebug() << "File data written successfully";
+    }
+
+    // Закрываем файл
+    file.close();
 }
 
 void Network::sendFile(QString path, QByteArray id, QString clientsId)
@@ -72,11 +117,24 @@ void Network::sendFile(QString path, QByteArray id, QString clientsId)
     quint64 size = file.size();
     QString fileSize = QString::number(size);
     //m_socket->write(size);
-    m_socket->write(reinterpret_cast<const char*>(&size), sizeof(size));
-    m_socket->write(":::size");
-    //m_socket->write(fileSize.toUtf8()+":::size");
+    //m_socket->write(reinterpret_cast<const char*>(&size), sizeof(size));
+    //m_socket->write(":::size");
+    m_socket->write(fileSize.toUtf8()+":::size");
+    m_socket->flush();
+    QThread::msleep(1);
+
+    const int chunkSize = 4096;
+    while (!file.atEnd()) {
+        QByteArray buffer = file.read(chunkSize);
+        m_socket->write(buffer + ":::b");
+        m_socket->flush();
+        QThread::msleep(1);
+    }
+
+    m_socket->write("END");
     m_socket->flush();
 
+    file.close();
 
     //m_socket->flush();
 }

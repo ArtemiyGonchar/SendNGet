@@ -22,7 +22,7 @@ private slots:
     void connectedToHost();
     void readyRead();
     void sendChunk();
-
+    void saveFile();
     //void sendFile(QFile file);
 
     void emitAction(NetworkParser::Request request);
@@ -30,6 +30,9 @@ private slots:
 private:
     QTcpSocket *m_socket;
 
+    QString m_path;
+    QString m_size;
+    QByteArray m_data;
 
 signals:
     void connected();
