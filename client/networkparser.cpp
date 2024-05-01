@@ -47,13 +47,6 @@ NetworkParser::Request NetworkParser::parseRequest(QByteArray data)
         qDebug()<<"disconnected: "<<request.disconnectedId;
         request.action = NetworkParser::disconnected;
     }
-    //QJsonObject json = QJsonDocument::fromJson(data).object();
-    //qDebug()<<json;
-    //qDebug()<<"=====";
-    //request.action = parseAction(json.value("action").toString());
-    //qDebug()<<"p_id==";
-    //p_id = request.uuid;
-    //qDebug()<<p_id;
     return request;
 }
 

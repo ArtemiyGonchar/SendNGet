@@ -28,6 +28,10 @@ void Network::readyRead()
 {
     QByteArray data = m_socket->readAll();
     QString dataString = data;
+
+    //qDebug()<<"Chunk received "<<data.length();
+
+
     //qDebug()<<data;
     //QString dataString = data;
 
@@ -47,8 +51,12 @@ void Network::readyRead()
     }
 
     if(data.endsWith("b")){
-        qDebug()<<data<<"NIIIIIIIIIIIIIGAAAAAAAAAA";
-        m_data += dataString.split(":::")[0].toUtf8();
+        //qDebug()<<data<<"ARTEM";
+        // qDebug()<<data<<"ARTEM";
+        data.chop(4);// remove 4 bytes in the end ":::b"
+        qDebug()<<"Chunk received "<<data.length();
+        //m_data += dataString.split(":::")[0].toUtf8(); // from QString to QByteArray
+        m_data += data;
     }
 
     if(data.endsWith("END")){
@@ -77,7 +85,8 @@ void Network::sendChunk()
 
 void Network::saveFile()
 {
-    QByteArray data = QByteArray::fromHex(m_data);
+    //QByteArray data = QByteArray::fromHex(m_data);
+    QByteArray data = m_data;
     QFile file(m_path);
     if (!file.open(QIODevice::WriteOnly)){
         qDebug()<<"GIVNO";
@@ -86,16 +95,16 @@ void Network::saveFile()
 
     qint64 bytesWritten = file.write(data);
     if (bytesWritten == -1) {
-        qDebug() << "Failed to write file data";
+        qDebug() << "NE NORM";
     } else {
-        qDebug() << "File data written successfully";
+        qDebug() << "NORM";
     }
 
     // Закрываем файл
     file.close();
 }
 
-void Network::sendFile(QString path, QByteArray id, QString clientsId)
+void Network::sendFile(QString path, QByteArray id)
 {
     QFile file(path);
 
@@ -125,8 +134,11 @@ void Network::sendFile(QString path, QByteArray id, QString clientsId)
 
     const int chunkSize = 4096;
     while (!file.atEnd()) {
+        //count bytes?
+
         QByteArray buffer = file.read(chunkSize);
         m_socket->write(buffer + ":::b");
+        //m_socket->write(buffer + ":::b", chunkSize + 4);
         m_socket->flush();
         QThread::msleep(1);
     }

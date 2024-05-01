@@ -15,7 +15,7 @@ class Network : public QObject
 public:
     explicit Network(QObject *parent = nullptr);
     void connectToHost(QString ip, int port);
-    void sendFile(QString file, QByteArray id, QString clientsId);
+    void sendFile(QString file, QByteArray id);
 
 private slots:
 

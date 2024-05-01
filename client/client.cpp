@@ -12,21 +12,18 @@ Client::Client(QWidget *parent)
 
     ui->sb_port->setMaximum(16000);  //max port
     ui->sb_port->setValue(8080);    //default port
-    ui->e_ip->setText("127.0.01");  // default ip
-
+    ui->e_ip->setText("127.0.0.1");  // default ip
 
     connect(m_network, &Network::connected, this, &Client::connectedToHost);
     connect(m_network, &Network::idAvailable, this, &Client::assignId);
     connect(m_network, &Network::clientsIdAvailable, this, &Client::addClientsToUi);
     connect(m_network, &Network::clientDisconnected, this, &Client::removeClientFromUi);
 
-
     connect(ui->b_connect, &QPushButton::clicked, this, &Client::connectButtonClicked);
     connect(ui->b_fileSelect, &QPushButton::clicked, this, &Client::setFile);
     connect(ui->b_sendfile, &QPushButton::clicked, this, &Client::sendFile);
 
     connect(ui->listWidget, &QListWidget::doubleClicked, this, &Client::selectClientAndSend);
-
 }
 
 Client::~Client()
@@ -45,9 +42,7 @@ void Client::connectedToHost()
 {
     ui->stackedWidget->setCurrentIndex(1);
     qDebug()<<"Connected to host";
-
 }
-
 
 //when we recevie id this func start
 void Client::assignId(QString id)
@@ -60,13 +55,13 @@ void Client::assignId(QString id)
 
 void Client::addClientsToUi(QStringList clients, QString info)
 {
-
     qDebug()<<clients;
     if(info == "CLIENTSLIST"){
         qDebug()<<"clientiiikii";
         for(QString id : clients){
             qDebug()<<id;
             QList<QListWidgetItem*> foundItems = ui->listWidget->findItems(id, Qt::MatchExactly);
+
             if (foundItems.isEmpty() && m_id != id){
                 ui->listWidget->addItem(id);
             }
@@ -77,6 +72,7 @@ void Client::addClientsToUi(QStringList clients, QString info)
 void Client::removeClientFromUi(QString id)
 {
     qDebug()<<"^-^ removed"<<id;
+
     QListWidgetItem *item = ui->listWidget->findItems(id, Qt::MatchExactly).first();
     ui->listWidget->takeItem(ui->listWidget->row(item));
     clients_id.removeOne(id);
@@ -94,15 +90,13 @@ void Client::sendFile()
     if (!m_path.isEmpty()){
         qDebug()<<m_path;
 
-        QListWidgetItem *item = ui->listWidget->currentItem();
-        QString id = item->text();
+        //QListWidgetItem *item = ui->listWidget->currentItem();
+        QString receiverId = ui->listWidget->currentItem()->text();
 
-        m_network->sendFile(m_path, id.toUtf8(), "s");
-
+        m_network->sendFile(m_path, receiverId.toUtf8());
     } else {
         qDebug()<<"Path is empty!";
     }
-
 }
 
 void Client::setFile()
