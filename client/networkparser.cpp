@@ -15,9 +15,6 @@ NetworkParser::Request NetworkParser::parseRequest(QByteArray data)
 
     if (jsonObj.contains("ID")){
         QJsonObject idObj = jsonObj["ID"].toObject();
-        qDebug()<<idObj;
-        qDebug()<<"===";
-        qDebug()<<idObj["userId"].toString();
         request.uuid = idObj["userId"].toString().toUtf8(); //test toUtf8
         request.action = Action::assignId;
     }
@@ -31,7 +28,6 @@ NetworkParser::Request NetworkParser::parseRequest(QByteArray data)
             for (const QJsonValue& clientIdValue : clientsArray) {
                 if (clientIdValue.isString()) {
                     QString clientId = clientIdValue.toString();
-                    qDebug() << "Client ID:" << clientId;
                     request.clientsId<<clientId;
                 }
             }

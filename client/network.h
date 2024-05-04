@@ -21,18 +21,23 @@ private slots:
 
     void connectedToHost();
     void readyRead();
-    void sendChunk();
+    void sendChunk(QByteArray data);
     void saveFile();
-    //void sendFile(QFile file);
+
+    void sendId(QByteArray id);
+    void sendFileName(QString filename);
+    void sendFileSize(QString filesize);
+
+
 
     void emitAction(NetworkParser::Request request);
 
 private:
     QTcpSocket *m_socket;
 
-    QString m_path;
-    QString m_size;
-    QByteArray m_data;
+    QString m_path; // path to file
+    QString m_size; // file size
+    QByteArray m_data; // contains chunks of bytes
 
 signals:
     void connected();
