@@ -19,6 +19,9 @@ Client::Client(QWidget *parent)
     connect(m_network, &Network::clientsIdAvailable, this, &Client::addClientsToUi);
     connect(m_network, &Network::clientDisconnected, this, &Client::removeClientFromUi);
 
+    connect(m_network, &Network::askReceived,this, &Client::askPage);
+    //connect(m_network, &Network::idAskReceived, this, &Client)
+
     connect(ui->b_connect, &QPushButton::clicked, this, &Client::connectButtonClicked);
     connect(ui->b_fileSelect, &QPushButton::clicked, this, &Client::setFile);
     connect(ui->b_sendfile, &QPushButton::clicked, this, &Client::sendFile);
@@ -57,7 +60,6 @@ void Client::addClientsToUi(QStringList clients, QString info)
 {
     qDebug()<<clients;
     if(info == "CLIENTSLIST"){
-        qDebug()<<"clientiiikii";
         for(QString id : clients){
             qDebug()<<id;
             QList<QListWidgetItem*> foundItems = ui->listWidget->findItems(id, Qt::MatchExactly);
@@ -71,8 +73,6 @@ void Client::addClientsToUi(QStringList clients, QString info)
 
 void Client::removeClientFromUi(QString id)
 {
-    qDebug()<<"^-^ removed"<<id;
-
     QListWidgetItem *item = ui->listWidget->findItems(id, Qt::MatchExactly).first();
     ui->listWidget->takeItem(ui->listWidget->row(item));
     clients_id.removeOne(id);
@@ -85,14 +85,49 @@ void Client::selectClientAndSend()
     }
 }
 
+void Client::askPage()
+{
+    ui->stackedWidget->setCurrentIndex(2);
+
+    connect(ui->b_yes, &QPushButton::clicked, this, &Client::responceYes);
+    connect(ui->b_no, &QPushButton::clicked, this, &Client::responceNo);
+    connect(m_network, &Network::idAskReceived, this, &Client::senderReceived);
+    connect(m_network, &Network::filenameAskReceived, this, &Client::filenameReceived);
+    connect(m_network, &Network::filesizeAskReceived, this, &Client::filesizeReceived);
+}
+
+void Client::responceYes()
+{
+    ui->stackedWidget->setCurrentIndex(1);
+    m_network->saveFile();
+}
+
+void Client::responceNo()
+{
+    ui->stackedWidget->setCurrentIndex(1);
+}
+
+void Client::senderReceived(QString id)
+{
+    ui->l_sender->setText(id);
+}
+
+void Client::filenameReceived(QString filename)
+{
+    ui->l_filename_2->setText(filename);
+}
+
+void Client::filesizeReceived(QString filesize)
+{
+    ui->l_filesize->setText(filesize);
+}
+
 void Client::sendFile()
 {
     if (!m_path.isEmpty()){
         qDebug()<<m_path;
 
-        //QListWidgetItem *item = ui->listWidget->currentItem();
         QString receiverId = ui->listWidget->currentItem()->text();
-
         m_network->sendFile(m_path, receiverId.toUtf8());
     } else {
         qDebug()<<"Path is empty!";

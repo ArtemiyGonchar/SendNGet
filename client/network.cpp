@@ -8,8 +8,6 @@ Network::Network(QObject *parent)
 
     connect(m_socket, &QTcpSocket::connected,this, &Network::connectedToHost);
     connect(m_socket, &QTcpSocket::readyRead,this , &Network::readyRead);
-    //connect(m_socket, &QTcpSocket::bytesWritten, this, &Network::sendChunk);
-
 
 }
 
@@ -26,9 +24,24 @@ void Network::connectedToHost()
 //reading data from socket
 void Network::readyRead()
 {
-    //QByteArray data = m_socket->readAll();
     QByteArray data = m_socket->read(4100);
     QString dataString = data;
+
+    if (data.contains("responce:::ask")){
+        qDebug()<<"RECPONCE ASK====================";
+
+        emit askReceived();
+    }
+
+    if (dataString.endsWith(":::clientid")){
+        dataString = dataString.split(":::")[0];
+        qDebug()<<"Received sender id" << dataString;
+        emit idAskReceived(m_myId);
+    }
+
+    if (data.endsWith("NO")){
+        //
+    }
 
     if (data.endsWith(":::filename")){
         //QString dataString
@@ -36,22 +49,23 @@ void Network::readyRead()
 
         qDebug()<<dataString<< " - File name received";
         m_path = "C:/SendNGet/"+dataString;
+        emit filenameAskReceived(dataString);
     }
 
     if (data.endsWith(":::size")){
         m_size = dataString.split(":::")[0];
         qDebug()<<m_size<<" - File size received";
+        emit filesizeAskReceived(m_size);
     }
 
     if(data.endsWith(":::b")){
         data.chop(4);// remove 4 bytes in the end ":::b"
         qDebug()<<"Chunk received "<<data.length();
-        //m_data += dataString.split(":::")[0].toUtf8(); // from QString to QByteArray
         m_data += data;
     }
 
     if(data.endsWith("END")){
-        saveFile();
+        //saveFile();
     }
 
     if (data.endsWith("json")){
@@ -63,11 +77,21 @@ void Network::readyRead()
         NetworkParser::Request request = NetworkParser::parseRequest(data);
         emitAction(request);
     }
+
+    if (data.endsWith(":::jsonuser")){
+        dataString = dataString.split(":::")[0];
+
+        qDebug()<<"Json file received";
+        data = dataString.toUtf8();
+
+        NetworkParser::Request request = NetworkParser::parseRequest(data);
+        m_myId = request.myId;
+        emitAction(request);
+    }
 }
 
 void Network::saveFile()
 {
-    //QByteArray data = QByteArray::fromHex(m_data);
     QByteArray data = m_data;
     QFile file(m_path);
     if (!file.open(QIODevice::WriteOnly)){
@@ -86,9 +110,17 @@ void Network::saveFile()
     file.close();
 }
 
+void Network::sendMyId()
+{
+    qDebug()<< "Send my id:" << m_myId;
+    m_socket->write(m_myId.toUtf8() + ":::clientid");
+    m_socket->flush();
+    QThread::msleep(1);
+}
+
 void Network::sendId(QByteArray id)
 {
-    m_socket->write(id+":::id");
+    m_socket->write(id+":::toConnectId");
     m_socket->flush();
     QThread::msleep(1);
 }
@@ -107,11 +139,18 @@ void Network::sendFileSize(QString filesize)
     QThread::msleep(1);
 }
 
+void Network::sendFileAsk()
+{
+    m_socket->write("responce:::ask");
+    m_socket->flush();
+    QThread::msleep(1);
+}
+
 void Network::sendChunk(QByteArray data)
 {
     m_socket->write(data + ":::b");
     m_socket->flush();
-    QThread::msleep(1);
+    QThread::msleep(1);    
 }
 
 void Network::sendFile(QString path, QByteArray id)
@@ -126,9 +165,12 @@ void Network::sendFile(QString path, QByteArray id)
     quint64 size = file.size();
     QString filesize = QString::number(size);
 
-    sendId(id);
+    sendId(id); // always must sended first
+    sendFileAsk();
+    sendMyId();
     sendFileName(fileName);
     sendFileSize(filesize);
+    //sendFileAsk();
 
     const int chunkSize = 4096;
     while (!file.atEnd()) {
@@ -146,7 +188,6 @@ void Network::sendFile(QString path, QByteArray id)
 void Network::emitAction(NetworkParser::Request request)
 {
     qDebug()<<"Emit action";
-
     switch(request.action){
     case NetworkParser::Action::assignId: emit idAvailable(request.uuid); break;
     case NetworkParser::Action::newClient: emit clientsIdAvailable(request.clientsId, request.addition); break;

@@ -22,6 +22,7 @@ public:
     };
 
     struct Request {
+        QByteArray myId;
         QByteArray uuid;
         Action action;
         QStringList clientsId;
@@ -29,9 +30,7 @@ public:
         QString disconnectedId;
     };
 
-
     static Request parseRequest(QByteArray data);
-
 };
 
 #endif // NETWORKPARSER_H

@@ -33,6 +33,14 @@ private slots:
     void removeClientFromUi(QString id);
     void selectClientAndSend();
 
+    void askPage();
+    void responceYes();
+    void responceNo();
+
+    void senderReceived(QString id);
+    void filenameReceived (QString filename);
+    void filesizeReceived (QString filesize);
+
     void sendFile();
     void setFile();
 private:
