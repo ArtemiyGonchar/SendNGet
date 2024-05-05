@@ -48,7 +48,16 @@ void Network::readyRead()
         dataString = dataString.split(":::")[0];
 
         qDebug()<<dataString<< " - File name received";
-        m_path = "C:/SendNGet/"+dataString;
+
+        QString path = QDir::currentPath();
+        QString choppedPath;
+        for (int i = 0; i < path.indexOf("SendNGet") + 8; i++){
+            choppedPath += path[i];
+        }
+        choppedPath += "/";
+        qDebug() << choppedPath;
+        m_path = choppedPath + dataString;
+        //m_path = "C:/SendNGet/"+dataString;
         emit filenameAskReceived(dataString);
     }
 
